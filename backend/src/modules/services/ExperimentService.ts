@@ -32,7 +32,7 @@ export class ExperimentService {
             // Calculate quality metrics for each response
             console.log(`Calculating quality metrics for ${responses.length} responses`);
             const metrics: QualityMetrics[] = responses.map(response => {
-                const metric = this.qualityService.calculateMetrics(response);
+                const metric = QualityMetricsService.calculateMetrics(response);
                 return {
                     ...metric,
                     response_id: response.id,

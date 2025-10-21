@@ -82,7 +82,7 @@ export class DatabaseService {
                     JSON.stringify(experiment.config),
                     experiment.created_at,
                     experiment.updated_at,
-                    (err) => {
+                    (err: any) => {
                         if (err) {
                             this.db.run('ROLLBACK');
                             reject(err);
@@ -105,7 +105,7 @@ export class DatabaseService {
                         response.text,
                         JSON.stringify(response.parameters),
                         JSON.stringify(response.metadata),
-                        (err) => {
+                        (err: any) => {
                             if (err) {
                                 this.db.run('ROLLBACK');
                                 reject(err);
@@ -150,7 +150,7 @@ export class DatabaseService {
                     metric.structure_score,
                     metric.overall_score,
                     JSON.stringify(metric.details),
-                    (err) => {
+                    (err: any) => {
                         if (err) {
                             reject(err);
                             return;
@@ -265,40 +265,41 @@ export class DatabaseService {
      */
     async deleteExperiment(id: string): Promise<boolean> {
         return new Promise((resolve, reject) => {
-            this.db.serialize(() => {
-                this.db.run('BEGIN TRANSACTION');
+            const db = this.db; // Store reference to avoid 'this' context issues
+            db.serialize(() => {
+                db.run('BEGIN TRANSACTION');
 
                 // Delete metrics first (foreign key constraint)
-                this.db.run(`
+                db.run(`
           DELETE FROM metrics WHERE response_id IN (
             SELECT id FROM responses WHERE experiment_id = ?
           )
-        `, [id], (err) => {
+        `, [id], (err: any) => {
                     if (err) {
-                        this.db.run('ROLLBACK');
+                        db.run('ROLLBACK');
                         reject(err);
                         return;
                     }
                 });
 
                 // Delete responses
-                this.db.run('DELETE FROM responses WHERE experiment_id = ?', [id], (err) => {
+                db.run('DELETE FROM responses WHERE experiment_id = ?', [id], (err: any) => {
                     if (err) {
-                        this.db.run('ROLLBACK');
+                        db.run('ROLLBACK');
                         reject(err);
                         return;
                     }
                 });
 
                 // Delete experiment
-                this.db.run('DELETE FROM experiments WHERE id = ?', [id], function (err) {
+                db.run('DELETE FROM experiments WHERE id = ?', [id], function (err: any) {
                     if (err) {
-                        this.db.run('ROLLBACK');
+                        db.run('ROLLBACK');
                         reject(err);
                         return;
                     }
 
-                    this.db.run('COMMIT', (err) => {
+                    db.run('COMMIT', (err: any) => {
                         if (err) {
                             reject(err);
                         } else {

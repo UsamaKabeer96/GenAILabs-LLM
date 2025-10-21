@@ -237,14 +237,14 @@ export class ExperimentModel {
                 });
 
                 // Delete experiment
-                db.run('DELETE FROM experiments WHERE id = ?', [id], function (err: any) {
+                db.run('DELETE FROM experiments WHERE id = ?', [id], function (this: any, err: any) {
                     if (err) {
                         db.run('ROLLBACK');
                         reject(err);
                         return;
                     }
 
-                    db.run('COMMIT', (err: any) => {
+                    db.run('COMMIT', function(this: any, err: any) {
                         if (err) {
                             reject(err);
                         } else {

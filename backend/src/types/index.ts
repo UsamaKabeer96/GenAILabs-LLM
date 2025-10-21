@@ -30,6 +30,7 @@ export interface QualityMetrics {
     length_score: number;
     structure_score: number;
     overall_score: number;
+    response_id: string;
     details: {
         sentence_count: number;
         word_count: number;

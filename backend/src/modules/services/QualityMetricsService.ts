@@ -33,6 +33,7 @@ export class QualityMetricsService {
             length_score: Math.round(lengthScore * 100) / 100,
             structure_score: Math.round(structureScore * 100) / 100,
             overall_score: Math.round(overallScore * 100) / 100,
+            response_id: response.id,
             details: {
                 sentence_count: sentenceCount,
                 word_count: wordCount,

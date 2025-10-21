@@ -17,6 +17,7 @@
 frontend/.next/
 /out/
 */node_modules
+*/dist
 
 # production
 /build
