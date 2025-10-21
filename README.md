@@ -1,4 +1,4 @@
-# LLM Parameter Lab 🧪
+# LLM Parameter Lab
 
 An experimental console for analyzing and comparing Large Language Model responses across different parameter configurations. This tool helps researchers and developers understand how parameters like temperature and top_p affect response quality and characteristics.
 
@@ -7,36 +7,36 @@ An experimental console for analyzing and comparing Large Language Model respons
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.1.6-blue)
 ![Express](https://img.shields.io/badge/Express-4.18.2-green)
 
-## ✨ Features
+## Features
 
-### 🔬 **Experimental Analysis**
+### **Experimental Analysis**
 
 - **Multi-Parameter Testing**: Test different combinations of temperature, top_p, max_tokens, and penalty settings
 - **Batch Processing**: Run multiple iterations per parameter set for statistical significance
 - **Custom Quality Metrics**: Proprietary algorithms for measuring coherence, completeness, length appropriateness, and structural quality
 
-### 📊 **Visual Dashboard**
+### **Visual Dashboard**
 
 - **Response Comparison**: Side-by-side analysis of generated responses
 - **Statistical Insights**: Best/worst response identification and trend analysis
 - **Real-time Metrics**: Live calculation of quality scores
 - **Score Visualization**: Color-coded metrics with detailed breakdowns
 
-### 💾 **Data Management**
+### **Data Management**
 
 - **Persistent Storage**: SQLite database for experiment history
 - **Search & Filter**: Find experiments by prompt content or parameters
 - **Export Options**: JSON and CSV formats
 - **Experiment History**: Browse and manage past experiments
 
-### 🎨 **Modern UI/UX**
+### **Modern UI/UX**
 
 - **Responsive Design**: Works seamlessly on desktop and mobile
 - **Clean Interface**: Professional design with Tailwind CSS
 - **Accessibility**: WCAG compliant design patterns
 - **TypeScript**: Full type safety throughout the application
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -85,7 +85,7 @@ An experimental console for analyzing and comparing Large Language Model respons
    - Frontend: http://localhost:3000
    - Backend: http://localhost:3001
 
-## 🏗️ Architecture
+## Architecture
 
 ### Frontend (Next.js 15)
 
@@ -145,7 +145,7 @@ Each metric uses multiple algorithms:
 - Repetition analysis and vocabulary diversity
 - Structural pattern recognition
 
-## 📖 Usage Guide
+## Usage Guide
 
 ### Creating an Experiment
 
@@ -176,7 +176,7 @@ The results dashboard provides:
 - **Export**: Download experiment data in JSON or CSV format
 - **Delete**: Remove experiments you no longer need
 
-## 🔧 API Reference
+## API Reference
 
 ### Experiments
 
@@ -200,78 +200,7 @@ GET /api/export/experiment/:id/csv
 GET / health;
 ```
 
-## 🧪 Quality Metrics Deep Dive
-
-### Coherence Scoring
-
-- **Transition Analysis**: Detects logical connectors and transition words
-- **Sentence Flow**: Evaluates how well sentences connect
-- **Logical Structure**: Identifies cause-effect relationships
-
-### Completeness Scoring
-
-- **Introduction Detection**: Checks for proper opening statements
-- **Conclusion Analysis**: Identifies summary or closing statements
-- **Detail Depth**: Measures explanation thoroughness
-- **Example Presence**: Detects illustrative content
-
-### Length Scoring
-
-- **Word Count Optimization**: Ideal range 50-500 words
-- **Sentence Count Balance**: Optimal 3-20 sentences
-- **Proportional Scoring**: Penalizes too short/long responses
-
-### Structure Scoring
-
-- **Paragraph Organization**: Detects proper paragraph breaks
-- **List Recognition**: Identifies bullet points and numbered lists
-- **Capitalization**: Checks proper sentence capitalization
-- **Formatting Quality**: Evaluates overall presentation
-
-## 🐛 Recent Fixes
-
-### Database Metrics Issue (Fixed)
-
-- **Problem**: Metrics were not being saved/retrieved from database
-- **Root Cause**: Incorrect SQL query syntax and response ID mapping
-- **Solution**: Fixed `saveMetrics` and `getExperiment` methods in `Experiment.model.ts`
-- **Result**: Quality metrics now properly persist and display
-
-### Frontend Integration (Fixed)
-
-- **Problem**: Frontend showing "N/A" for all scores
-- **Root Cause**: Empty metrics arrays due to database issues
-- **Solution**: Fixed backend metrics persistence
-- **Result**: Frontend now displays actual quality scores
-
-## 🚀 Deployment
-
-### Frontend (Vercel)
-
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy from frontend directory
-cd frontend
-vercel --prod
-```
-
-### Backend (Railway/Render)
-
-```bash
-# Railway deployment
-railway login
-railway init
-railway up
-
-# Or Render deployment
-# Connect GitHub repository to Render
-# Set environment variables
-# Deploy automatically on push
-```
-
-### Environment Variables
+## Environment Variables
 
 ```bash
 # Production
@@ -282,7 +211,7 @@ OPENAI_API_KEY=your_production_key
 DATABASE_PATH=/app/data/experiments.db
 ```
 
-## 🧪 Testing
+## Testing
 
 ### Manual Testing
 
@@ -306,39 +235,9 @@ curl http://localhost:3001/api/experiments/{experiment_id}
 curl http://localhost:3001/api/experiments
 ```
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- OpenAI for the GPT API
-- Vercel for Next.js hosting
-- Tailwind CSS for the design system
-- Express.js for the backend framework
-- SQLite for lightweight database storage
-
-## 📞 Support
-
-For questions or support:
-
-- Create an issue on GitHub
-- Check the documentation pages in the application
-- Review the API documentation
-
----
-
 **Built with ❤️ for the AI research community**
 
-## 🔄 Recent Updates
+## Recent Updates
 
 - ✅ Fixed database metrics persistence
 - ✅ Resolved frontend "N/A" score display issue
