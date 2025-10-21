@@ -2,11 +2,11 @@
   "name": "llm-parameter-lab-backend",
   "version": "1.0.0",
   "description": "Backend API for LLM Parameter Lab",
-  "main": "dist/server.js",
+  "main": "dist/index.js",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
+    "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "node dist/index.js",
     "lint": "eslint src/**/*.ts",
     "test": "jest"
   },
