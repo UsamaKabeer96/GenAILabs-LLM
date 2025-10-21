@@ -49,7 +49,7 @@ An experimental console for analyzing and comparing Large Language Model respons
 1. **Clone the repository**
 
    ```bash
-   git clone <repository-url>
+   git clone git@github.com:UsamaKabeer96/GenAILabs-LLM.git
    cd GenAILabs-LLM
    ```
 
