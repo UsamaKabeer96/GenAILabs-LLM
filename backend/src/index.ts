@@ -84,37 +84,8 @@ app.use(ensureDatabaseConnection);
 // API routes
 app.use('/api', AppRoutes);
 
-// Debug endpoint to check environment variables
-app.get('/debug', (req, res) => {
-    console.log('🔍 Debug endpoint requested');
-    res.json({
-        environment: process.env.NODE_ENV,
-        vercel: process.env.VERCEL,
-        mongodb_uri_exists: !!process.env.MONGODB_URI,
-        mongodb_uri_length: process.env.MONGODB_URI?.length || 0,
-        mongodb_uri_start: process.env.MONGODB_URI?.substring(0, 20) + '...',
-        openai_key_exists: !!process.env.OPENAI_API_KEY,
-        frontend_url: process.env.FRONTEND_URL,
-        database_state: mongoose.connection.readyState,
-        database_host: mongoose.connection.host || 'unknown'
-    });
-});
-
 // Health check endpoint
 app.get('/', (req, res) => {
-    const dbState = mongoose.connection.readyState;
-    const dbStates = {
-        0: 'disconnected',
-        1: 'connected',
-        2: 'connecting',
-        3: 'disconnecting'
-    };
-
-    console.log('🏥 Health check requested');
-    console.log('📊 Database state:', dbStates[dbState as keyof typeof dbStates]);
-    console.log('🌍 Environment:', process.env.NODE_ENV);
-    console.log('☁️ Vercel:', process.env.VERCEL);
-
     res.json({
         status: 'healthy',
         timestamp: new Date().toISOString(),
@@ -122,9 +93,8 @@ app.get('/', (req, res) => {
         environment: process.env.NODE_ENV || 'development',
         vercel: process.env.VERCEL === '1',
         database: {
-            status: dbStates[dbState as keyof typeof dbStates],
-            readyState: dbState,
             host: mongoose.connection.host || 'unknown',
+            readyState: mongoose.connection.readyState,
             name: mongoose.connection.name || 'unknown'
         }
     });
