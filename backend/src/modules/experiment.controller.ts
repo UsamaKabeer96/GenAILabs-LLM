@@ -1,15 +1,15 @@
 import { ExperimentConfig, ExperimentResult, QualityMetrics, ComparisonData } from '../types';
-import { ExperimentModel } from './Experiment.model';
+import { ExperimentModelService } from './Experiment.model';
 import { LLMService } from './services/LLMService';
 import { QualityMetricsService } from './services/QualityMetricsService';
 
 export class ExperimentController {
-    private experimentModel: ExperimentModel;
+    private experimentModel: ExperimentModelService;
     private llmService: LLMService;
     private qualityService: QualityMetricsService;
 
     constructor() {
-        this.experimentModel = new ExperimentModel();
+        this.experimentModel = new ExperimentModelService();
         this.llmService = new LLMService();
         this.qualityService = new QualityMetricsService();
     }
@@ -72,7 +72,8 @@ export class ExperimentController {
      * Get all experiments with pagination
      */
     async getExperiments(limit: number = 20, offset: number = 0): Promise<ExperimentResult[]> {
-        return await this.experimentModel.getExperiments(limit, offset);
+        const allExperiments = await this.experimentModel.getAllExperiments();
+        return allExperiments.slice(offset, offset + limit);
     }
 
     /**
@@ -86,7 +87,8 @@ export class ExperimentController {
      * Search experiments
      */
     async searchExperiments(query: string, limit: number = 20): Promise<ExperimentResult[]> {
-        return await this.experimentModel.searchExperiments(query, limit);
+        const results = await this.experimentModel.searchExperiments(query);
+        return results.slice(0, limit);
     }
 
     /**

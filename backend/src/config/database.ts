@@ -1,14 +1,10 @@
-import sqlite3 from 'sqlite3';
-import { config } from './index';
+import mongoose from 'mongoose';
 
-export class DatabaseConnection {
+class DatabaseConnection {
   private static instance: DatabaseConnection;
-  private db: sqlite3.Database;
+  private isConnected: boolean = false;
 
-  private constructor() {
-    this.db = new sqlite3.Database(config.DATABASE_PATH);
-    this.initializeTables();
-  }
+  private constructor() { }
 
   public static getInstance(): DatabaseConnection {
     if (!DatabaseConnection.instance) {
@@ -17,61 +13,67 @@ export class DatabaseConnection {
     return DatabaseConnection.instance;
   }
 
-  public getDatabase(): sqlite3.Database {
-    return this.db;
+  public async connect(): Promise<void> {
+    if (this.isConnected) {
+      console.log('MongoDB already connected');
+      return;
+    }
+
+    try {
+      const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/llm-parameter-lab';
+
+      await mongoose.connect(mongoUri, {
+        // Remove deprecated options
+      });
+
+      this.isConnected = true;
+      console.log('MongoDB connected successfully');
+
+      // Handle connection events
+      mongoose.connection.on('error', (error: Error) => {
+        console.error('MongoDB connection error:', error);
+        this.isConnected = false;
+      });
+
+      mongoose.connection.on('disconnected', () => {
+        console.log('MongoDB disconnected');
+        this.isConnected = false;
+      });
+
+      mongoose.connection.on('reconnected', () => {
+        console.log('MongoDB reconnected');
+        this.isConnected = true;
+      });
+
+    } catch (error) {
+      console.error('MongoDB connection failed:', error);
+      this.isConnected = false;
+      throw error;
+    }
   }
 
-  private initializeTables(): void {
-    // Experiments table
-    this.db.run(`
-      CREATE TABLE IF NOT EXISTS experiments (
-        id TEXT PRIMARY KEY,
-        config TEXT NOT NULL,
-        created_at TEXT NOT NULL,
-        updated_at TEXT NOT NULL
-      )
-    `);
+  public async disconnect(): Promise<void> {
+    if (!this.isConnected) {
+      return;
+    }
 
-    // Responses table
-    this.db.run(`
-      CREATE TABLE IF NOT EXISTS responses (
-        id TEXT PRIMARY KEY,
-        experiment_id TEXT NOT NULL,
-        text TEXT NOT NULL,
-        parameters TEXT NOT NULL,
-        metadata TEXT NOT NULL,
-        FOREIGN KEY (experiment_id) REFERENCES experiments (id)
-      )
-    `);
-
-    // Metrics table
-    this.db.run(`
-      CREATE TABLE IF NOT EXISTS metrics (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        response_id TEXT NOT NULL,
-        coherence_score REAL NOT NULL,
-        completeness_score REAL NOT NULL,
-        length_score REAL NOT NULL,
-        structure_score REAL NOT NULL,
-        overall_score REAL NOT NULL,
-        details TEXT NOT NULL,
-        FOREIGN KEY (response_id) REFERENCES responses (id)
-      )
-    `);
-
-    // Create indexes for better performance
-    this.db.run(`
-      CREATE INDEX IF NOT EXISTS idx_responses_experiment_id ON responses (experiment_id)
-    `);
-    this.db.run(`
-      CREATE INDEX IF NOT EXISTS idx_metrics_response_id ON metrics (response_id)
-    `);
-    this.db.run(`
-      CREATE INDEX IF NOT EXISTS idx_experiments_created_at ON experiments (created_at)
-    `);
+    try {
+      await mongoose.disconnect();
+      this.isConnected = false;
+      console.log('MongoDB disconnected');
+    } catch (error) {
+      console.error('Error disconnecting from MongoDB:', error);
+      throw error;
+    }
   }
 
-  public close(): void {
-    this.db.close();
+  public getConnectionStatus(): boolean {
+    return this.isConnected && mongoose.connection.readyState === 1;
+  }
+
+  public getDatabase() {
+    return mongoose.connection.db;
   }
 }
+
+export { DatabaseConnection };

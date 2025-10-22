@@ -8,6 +8,7 @@ import { errorHandler } from './middleware/errorHandler';
 import { requestLogger } from './middleware/requestLogger';
 import { config } from './config/index';
 import { AppRoutes } from './routes';
+import { DatabaseConnection } from './config/database';
 
 // Load environment variables
 dotenv.config();
@@ -46,7 +47,8 @@ app.get('/', (req, res) => {
         status: 'healthy',
         timestamp: new Date().toISOString(),
         version: '1.0.0',
-        environment: process.env.NODE_ENV || 'development'
+        environment: process.env.NODE_ENV || 'development',
+        database: DatabaseConnection.getInstance().getConnectionStatus() ? 'connected' : 'disconnected'
     });
 });
 
@@ -68,24 +70,28 @@ export default app;
 if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
     const PORT = config.PORT || 3001;
 
-    // Graceful shutdown
-    process.on('SIGTERM', () => {
-        console.log('SIGTERM received, shutting down gracefully');
-        const { DatabaseConnection } = require('./config/database');
-        DatabaseConnection.getInstance().close();
-        process.exit(0);
-    });
+    // Connect to MongoDB before starting server
+    DatabaseConnection.getInstance().connect().then(() => {
+        // Graceful shutdown
+        process.on('SIGTERM', async () => {
+            console.log('SIGTERM received, shutting down gracefully');
+            await DatabaseConnection.getInstance().disconnect();
+            process.exit(0);
+        });
 
-    process.on('SIGINT', () => {
-        console.log('SIGINT received, shutting down gracefully');
-        const { DatabaseConnection } = require('./config/database');
-        DatabaseConnection.getInstance().close();
-        process.exit(0);
-    });
+        process.on('SIGINT', async () => {
+            console.log('SIGINT received, shutting down gracefully');
+            await DatabaseConnection.getInstance().disconnect();
+            process.exit(0);
+        });
 
-    app.listen(PORT, () => {
-        console.log(`🚀 Server running on port ${PORT}`);
-        console.log(`📊 LLM Parameter Lab API ready`);
-        console.log(`🔗 Health check: http://localhost:${PORT}/health`);
+        app.listen(PORT, () => {
+            console.log(`🚀 Server running on port ${PORT}`);
+            console.log(`📊 LLM Parameter Lab API ready`);
+            console.log(`🔗 Health check: http://localhost:${PORT}/`);
+        });
+    }).catch((error) => {
+        console.error('Failed to start server:', error);
+        process.exit(1);
     });
 }
