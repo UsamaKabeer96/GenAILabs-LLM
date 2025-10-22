@@ -8,7 +8,8 @@ import { errorHandler } from './middleware/errorHandler';
 import { requestLogger } from './middleware/requestLogger';
 import { config } from './config/index';
 import { AppRoutes } from './routes';
-import { DatabaseConnection } from './config/database';
+import { mongoDB } from './config/database';
+import mongoose from 'mongoose';
 
 // Load environment variables
 dotenv.config();
@@ -21,6 +22,7 @@ app.use(cors({
     origin: config.FRONTEND_URL,
     credentials: true,
 }));
+
 
 // Rate limiting
 const limiter = rateLimit({
@@ -48,7 +50,7 @@ app.get('/', (req, res) => {
         timestamp: new Date().toISOString(),
         version: '1.0.0',
         environment: process.env.NODE_ENV || 'development',
-        database: DatabaseConnection.getInstance().getConnectionStatus() ? 'connected' : 'disconnected'
+        database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
     });
 });
 
@@ -71,20 +73,7 @@ if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
     const PORT = config.PORT || 3001;
 
     // Connect to MongoDB before starting server
-    DatabaseConnection.getInstance().connect().then(() => {
-        // Graceful shutdown
-        process.on('SIGTERM', async () => {
-            console.log('SIGTERM received, shutting down gracefully');
-            await DatabaseConnection.getInstance().disconnect();
-            process.exit(0);
-        });
-
-        process.on('SIGINT', async () => {
-            console.log('SIGINT received, shutting down gracefully');
-            await DatabaseConnection.getInstance().disconnect();
-            process.exit(0);
-        });
-
+    mongoDB().then(() => {
         app.listen(PORT, () => {
             console.log(`🚀 Server running on port ${PORT}`);
             console.log(`📊 LLM Parameter Lab API ready`);
