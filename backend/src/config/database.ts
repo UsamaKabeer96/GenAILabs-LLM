@@ -28,7 +28,6 @@ export const mongoDB = async () => {
           serverSelectionTimeoutMS: 10000, // Increased timeout for Vercel
           socketTimeoutMS: 45000,
           bufferCommands: false,
-          bufferMaxEntries: 0,
           maxPoolSize: 1, // Limit connection pool for serverless
           minPoolSize: 0,
         }
