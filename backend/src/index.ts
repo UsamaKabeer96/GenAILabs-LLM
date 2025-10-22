@@ -13,7 +13,6 @@ import { AppRoutes } from './routes';
 dotenv.config();
 
 const app = express();
-const PORT = config.PORT;
 
 // Security middleware
 app.use(helmet());
@@ -42,11 +41,12 @@ app.use(requestLogger);
 app.use('/api', AppRoutes);
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+app.get('/', (req, res) => {
     res.json({
         status: 'healthy',
         timestamp: new Date().toISOString(),
-        version: '1.0.0'
+        version: '1.0.0',
+        environment: process.env.NODE_ENV || 'development'
     });
 });
 
@@ -61,25 +61,31 @@ app.use('*', (req, res) => {
     });
 });
 
-// Graceful shutdown
-process.on('SIGTERM', () => {
-    console.log('SIGTERM received, shutting down gracefully');
-    const { DatabaseConnection } = require('./config/database');
-    DatabaseConnection.getInstance().close();
-    process.exit(0);
-});
-
-process.on('SIGINT', () => {
-    console.log('SIGINT received, shutting down gracefully');
-    const { DatabaseConnection } = require('./config/database');
-    DatabaseConnection.getInstance().close();
-    process.exit(0);
-});
-
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`📊 LLM Parameter Lab API ready`);
-    console.log(`🔗 Health check: http://localhost:${PORT}/health`);
-});
-
+// For Vercel deployment, export the app instead of starting a server
 export default app;
+
+// Only start the server if not in Vercel environment
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+    const PORT = config.PORT || 3001;
+
+    // Graceful shutdown
+    process.on('SIGTERM', () => {
+        console.log('SIGTERM received, shutting down gracefully');
+        const { DatabaseConnection } = require('./config/database');
+        DatabaseConnection.getInstance().close();
+        process.exit(0);
+    });
+
+    process.on('SIGINT', () => {
+        console.log('SIGINT received, shutting down gracefully');
+        const { DatabaseConnection } = require('./config/database');
+        DatabaseConnection.getInstance().close();
+        process.exit(0);
+    });
+
+    app.listen(PORT, () => {
+        console.log(`🚀 Server running on port ${PORT}`);
+        console.log(`📊 LLM Parameter Lab API ready`);
+        console.log(`🔗 Health check: http://localhost:${PORT}/health`);
+    });
+}
