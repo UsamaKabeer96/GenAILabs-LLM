@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { experimentRoutes } from "./experiments";
-import { exportController } from "@/controllers/exportController";
-import { ExperimentService } from "@/modules/services/ExperimentService";
+import { exportController } from "../controllers/exportController";
+import { ExperimentService } from "../modules/services/ExperimentService";
 
 const experimentService = new ExperimentService();
 

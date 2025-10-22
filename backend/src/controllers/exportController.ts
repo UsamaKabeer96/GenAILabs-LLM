@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
-import { ExperimentResult, ExportFormat, LLMParameters, LLMResponse, QualityMetrics } from '@/types';
-import { ExperimentService } from '@/modules/services/ExperimentService';
+import { ExperimentResult, ExportFormat, LLMParameters, LLMResponse, QualityMetrics } from '../types';
+import { ExperimentService } from '../modules/services/ExperimentService';
 
 export const exportController = (experimentService: ExperimentService) => {
     const router = Router();

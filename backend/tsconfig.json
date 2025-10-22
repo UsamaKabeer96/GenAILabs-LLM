@@ -25,6 +25,8 @@
     "paths": {
       "@/*": ["src/*"]
     },
+    "outDir": "./dist",
+    "rootDir": "./src",
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true

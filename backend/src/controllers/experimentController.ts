@@ -1,4 +1,4 @@
-import { ExperimentService } from '@/modules/services/ExperimentService';
+import { ExperimentService } from '../modules/services/ExperimentService';
 import { Router, Request, Response } from 'express';
 import { z } from 'zod';
 

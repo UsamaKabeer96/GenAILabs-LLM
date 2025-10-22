@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
-import { LLMParameters, LLMResponse, ExperimentConfig } from '@/types';
-import { config } from '@/config';
+import { LLMParameters, LLMResponse, ExperimentConfig } from '../../types';
+import { config } from '../../config';
 
 export class LLMService {
     private openai: OpenAI;
