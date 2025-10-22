@@ -25,16 +25,29 @@ if (process.env.VERCEL === "1") {
 const ensureDatabaseConnection = async (req: any, res: any, next: any) => {
     if (process.env.VERCEL === "1") {
         try {
+            console.log('Database middleware triggered');
+            console.log('Current connection state:', mongoose.connection.readyState);
+            console.log('MONGODB_URI exists:', !!process.env.MONGODB_URI);
+            console.log('MONGODB_URI length:', process.env.MONGODB_URI?.length || 0);
+
             if (mongoose.connection.readyState !== 1) {
                 console.log('Attempting to connect to MongoDB...');
                 await mongoDB();
                 console.log('MongoDB connection established');
+            } else {
+                console.log('MongoDB already connected');
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('MongoDB connection failed:', error);
+            console.error('Error details:', {
+                message: error?.message,
+                name: error?.name,
+                code: error?.code
+            });
             return res.status(500).json({
                 error: 'Database connection failed',
-                message: 'Unable to connect to the database'
+                message: 'Unable to connect to the database',
+                details: error?.message || 'Unknown error'
             });
         }
     }
@@ -70,6 +83,22 @@ app.use(ensureDatabaseConnection);
 
 // API routes
 app.use('/api', AppRoutes);
+
+// Debug endpoint to check environment variables
+app.get('/debug', (req, res) => {
+    console.log('🔍 Debug endpoint requested');
+    res.json({
+        environment: process.env.NODE_ENV,
+        vercel: process.env.VERCEL,
+        mongodb_uri_exists: !!process.env.MONGODB_URI,
+        mongodb_uri_length: process.env.MONGODB_URI?.length || 0,
+        mongodb_uri_start: process.env.MONGODB_URI?.substring(0, 20) + '...',
+        openai_key_exists: !!process.env.OPENAI_API_KEY,
+        frontend_url: process.env.FRONTEND_URL,
+        database_state: mongoose.connection.readyState,
+        database_host: mongoose.connection.host || 'unknown'
+    });
+});
 
 // Health check endpoint
 app.get('/', (req, res) => {
