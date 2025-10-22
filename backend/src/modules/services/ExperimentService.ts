@@ -1,17 +1,17 @@
 import { ExperimentConfig, ExperimentResult, LLMResponse, QualityMetrics, ComparisonData } from '../../types';
 import { LLMService } from './LLMService';
 import { QualityMetricsService } from './QualityMetricsService';
-import { DatabaseService } from './DatabaseService';
+import { ExperimentModelService } from '../Experiment.model';
 
 export class ExperimentService {
     private llmService: LLMService;
     private qualityService: QualityMetricsService;
-    private dbService: DatabaseService;
+    private experimentModel: ExperimentModelService;
 
     constructor() {
         this.llmService = new LLMService();
         this.qualityService = new QualityMetricsService();
-        this.dbService = new DatabaseService();
+        this.experimentModel = new ExperimentModelService();
     }
 
     /**
@@ -50,7 +50,7 @@ export class ExperimentService {
             };
 
             // Save to database
-            await this.dbService.saveExperiment(experiment);
+            await this.experimentModel.saveExperiment(experiment);
 
             console.log(`Experiment ${experimentId} completed successfully`);
             return experiment;
@@ -65,35 +65,37 @@ export class ExperimentService {
      * Get experiment by ID
      */
     async getExperiment(id: string): Promise<ExperimentResult | null> {
-        return await this.dbService.getExperiment(id);
+        return await this.experimentModel.getExperiment(id);
     }
 
     /**
      * Get all experiments with pagination
      */
     async getExperiments(limit: number = 20, offset: number = 0): Promise<ExperimentResult[]> {
-        return await this.dbService.getExperiments(limit, offset);
+        const allExperiments = await this.experimentModel.getAllExperiments();
+        return allExperiments.slice(offset, offset + limit);
     }
 
     /**
      * Delete experiment
      */
     async deleteExperiment(id: string): Promise<boolean> {
-        return await this.dbService.deleteExperiment(id);
+        return await this.experimentModel.deleteExperiment(id);
     }
 
     /**
      * Search experiments
      */
     async searchExperiments(query: string, limit: number = 20): Promise<ExperimentResult[]> {
-        return await this.dbService.searchExperiments(query, limit);
+        const results = await this.experimentModel.searchExperiments(query);
+        return results.slice(0, limit);
     }
 
     /**
      * Get experiment statistics
      */
     async getExperimentStats() {
-        return await this.dbService.getExperimentStats();
+        return await this.experimentModel.getExperimentStats();
     }
 
     /**
@@ -241,12 +243,5 @@ export class ExperimentService {
                 throw new Error(`Invalid parameters at index ${index}: ${validation.errors.join(', ')}`);
             }
         });
-    }
-
-    /**
-     * Close database connection
-     */
-    close(): void {
-        this.dbService.close();
     }
 }
