@@ -21,8 +21,25 @@ if (process.env.VERCEL === "1") {
     app.set("trust proxy", 1);
 }
 
-// Connect to MongoDB
-mongoDB();
+// Database connection middleware for Vercel
+const ensureDatabaseConnection = async (req: any, res: any, next: any) => {
+    if (process.env.VERCEL === "1") {
+        try {
+            if (mongoose.connection.readyState !== 1) {
+                console.log('Attempting to connect to MongoDB...');
+                await mongoDB();
+                console.log('MongoDB connection established');
+            }
+        } catch (error) {
+            console.error('MongoDB connection failed:', error);
+            return res.status(500).json({
+                error: 'Database connection failed',
+                message: 'Unable to connect to the database'
+            });
+        }
+    }
+    next();
+};
 
 // Security middleware
 app.use(helmet());
@@ -48,17 +65,39 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Logging middleware
 app.use(requestLogger);
 
+// Database connection middleware for Vercel
+app.use(ensureDatabaseConnection);
+
 // API routes
 app.use('/api', AppRoutes);
 
 // Health check endpoint
 app.get('/', (req, res) => {
+    const dbState = mongoose.connection.readyState;
+    const dbStates = {
+        0: 'disconnected',
+        1: 'connected',
+        2: 'connecting',
+        3: 'disconnecting'
+    };
+
+    console.log('🏥 Health check requested');
+    console.log('📊 Database state:', dbStates[dbState as keyof typeof dbStates]);
+    console.log('🌍 Environment:', process.env.NODE_ENV);
+    console.log('☁️ Vercel:', process.env.VERCEL);
+
     res.json({
         status: 'healthy',
         timestamp: new Date().toISOString(),
         version: '1.0.0',
         environment: process.env.NODE_ENV || 'development',
-        database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+        vercel: process.env.VERCEL === '1',
+        database: {
+            status: dbStates[dbState as keyof typeof dbStates],
+            readyState: dbState,
+            host: mongoose.connection.host || 'unknown',
+            name: mongoose.connection.name || 'unknown'
+        }
     });
 });
 
