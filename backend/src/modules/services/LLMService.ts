@@ -13,11 +13,16 @@ export class LLMService {
     private initializeOpenAI(): void {
         if (!this.openai) {
             if (!config.openai.apiKey) {
+                console.error('OpenAI API key is missing!');
+                console.error('Please check your .env file or environment variables');
                 throw new Error('OpenAI API key is required but not provided');
             }
+
+            console.log('Initializing OpenAI client...');
             this.openai = new OpenAI({
                 apiKey: config.openai.apiKey,
             });
+            console.log('OpenAI client initialized successfully');
         }
     }
 
@@ -60,7 +65,7 @@ export class LLMService {
             };
         } catch (error: any) {
             console.error('Error generating LLM response:', error);
-            
+
             // Handle specific OpenAI errors
             if (error.code === 'insufficient_quota') {
                 throw new Error(`OpenAI API quota exceeded. Please check your billing details at https://platform.openai.com/account/billing. Error: ${error.message}`);
@@ -71,7 +76,7 @@ export class LLMService {
             } else if (error.status === 429) {
                 throw new Error(`OpenAI API rate limit exceeded (429). Please try again later or upgrade your plan. Error: ${error.message}`);
             }
-            
+
             throw new Error(`Failed to generate response: ${error.message || 'Unknown error'}`);
         }
     }

@@ -1,16 +1,19 @@
 import { ExperimentConfig, ExperimentResult, QualityMetrics, ComparisonData } from '../types';
 import { ExperimentModelService } from './Experiment.model';
-import { LLMService } from './services/LLMService';
+import { UnifiedLLMService } from './services/UnifiedLLMService';
 import { QualityMetricsService } from './services/QualityMetricsService';
+import { config } from '../config';
 
 export class ExperimentController {
     private experimentModel: ExperimentModelService;
-    private llmService: LLMService;
+    private llmService: UnifiedLLMService;
     private qualityService: QualityMetricsService;
 
     constructor() {
         this.experimentModel = new ExperimentModelService();
-        this.llmService = new LLMService();
+        // Use Gemini by default for free usage
+        const provider = config.DEFAULT_LLM_PROVIDER as 'openai' | 'gemini' || 'gemini';
+        this.llmService = new UnifiedLLMService(provider);
         this.qualityService = new QualityMetricsService();
     }
 
@@ -23,21 +26,16 @@ export class ExperimentController {
 
         try {
             // Validate configuration
-            console.log(`🔍 Validating experiment configuration for ${experimentId}`);
             this.validateConfig(config);
-            console.log(`✅ Configuration validated successfully`);
 
             // Generate responses
-            console.log(`🚀 Starting response generation for experiment ${experimentId}`);
             const responses = await this.llmService.generateExperimentResponses(config);
-            console.log(`✅ Generated ${responses.length} responses`);
 
             if (responses.length === 0) {
-                throw new Error('No responses were generated. Please check your OpenAI API key and try again.');
+                throw new Error('No responses were generated. Please check your API key and try again.');
             }
 
             // Calculate quality metrics for each response
-            console.log(`📊 Calculating quality metrics for ${responses.length} responses`);
             const metrics: QualityMetrics[] = responses.map(response => {
                 const metric = QualityMetricsService.calculateMetrics(response);
                 return {
@@ -45,7 +43,6 @@ export class ExperimentController {
                     response_id: response.id,
                 };
             });
-            console.log(`✅ Quality metrics calculated`);
 
             // Create experiment result
             const experiment: ExperimentResult = {
@@ -58,20 +55,12 @@ export class ExperimentController {
             };
 
             // Save to database
-            console.log(`💾 Saving experiment to database`);
             await this.experimentModel.saveExperiment(experiment);
-            console.log(`✅ Experiment saved successfully`);
 
-            console.log(`🎉 Experiment ${experimentId} completed successfully with ${responses.length} responses`);
             return experiment;
 
         } catch (error: any) {
-            console.error(`💥 Error running experiment ${experimentId}:`, error);
-            console.error(`Error details:`, {
-                message: error?.message,
-                name: error?.name,
-                stack: error?.stack
-            });
+            console.error(`Error running experiment ${experimentId}:`, error.message);
             throw new Error(`Failed to run experiment: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
     }
@@ -273,7 +262,7 @@ export class ExperimentController {
 
         // Validate each parameter set
         config.parameters.forEach((params, index) => {
-            const validation = LLMService.validateParameters(params);
+            const validation = UnifiedLLMService.validateParameters(params);
             if (!validation.valid) {
                 throw new Error(`Invalid parameters at index ${index}: ${validation.errors.join(', ')}`);
             }

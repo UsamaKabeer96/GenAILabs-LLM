@@ -1,6 +1,17 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import { Layout } from '@/components/Layout'
 
 export default function API() {
+    const [baseUrl, setBaseUrl] = useState('http://localhost:3001/api')
+
+    useEffect(() => {
+        // Set the base URL dynamically based on environment
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL ||
+            (typeof window !== 'undefined' ? `${window.location.origin}/api` : 'http://localhost:3001/api')
+        setBaseUrl(apiUrl)
+    }, [])
     return (
         <Layout>
             <div className="max-w-4xl mx-auto px-6 py-16">
@@ -22,8 +33,41 @@ export default function API() {
                             </p>
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <p className="text-sm font-mono text-gray-600">
-                                    Base URL: <span className="text-blue-600">http://localhost:3001/api</span>
+                                    Base URL: <span className="text-blue-600">{baseUrl}</span>
                                 </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Available Models */}
+                    <div className="card">
+                        <h2 className="text-xl font-semibold text-gray-900 mb-4">Available Models</h2>
+                        <div className="space-y-4 text-gray-700">
+                            <p>
+                                The API supports both OpenAI and Gemini models. OpenAI model names are automatically
+                                mapped to their Gemini equivalents for processing.
+                            </p>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="bg-gray-50 p-4 rounded-lg">
+                                    <h4 className="font-semibold text-gray-800 mb-2">OpenAI Models (Auto-mapped)</h4>
+                                    <ul className="text-sm text-gray-700 space-y-1">
+                                        <li><code>gpt-3.5-turbo</code> → gemini-2.0-flash</li>
+                                        <li><code>gpt-3.5-turbo-16k</code> → gemini-2.0-flash</li>
+                                        <li><code>gpt-4</code> → gemini-2.0-flash</li>
+                                        <li><code>gpt-4-turbo</code> → gemini-2.0-flash</li>
+                                    </ul>
+                                </div>
+
+                                <div className="bg-gray-50 p-4 rounded-lg">
+                                    <h4 className="font-semibold text-gray-800 mb-2">Gemini Models (Direct)</h4>
+                                    <ul className="text-sm text-gray-700 space-y-1">
+                                        <li><code>gemini-2.0-flash</code></li>
+                                        <li><code>gemini-2.5-pro</code></li>
+                                        <li><code>gemini-2.5-flash</code></li>
+                                        <li><code>gemini-2.0-flash-lite</code></li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -76,6 +120,12 @@ export default function API() {
   ]
 }`}
                                         </pre>
+                                        <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                            <p className="text-sm text-blue-800">
+                                                <strong>Note:</strong> OpenAI model names (gpt-3.5-turbo, gpt-4, etc.) are automatically mapped to Gemini models for processing.
+                                                You can also use Gemini model names directly (gemini-2.0-flash, gemini-2.5-pro, etc.).
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
 

@@ -1,15 +1,18 @@
 import { ExperimentConfig, ExperimentResult, LLMResponse, QualityMetrics, ComparisonData } from '../../types';
-import { LLMService } from './LLMService';
+import { UnifiedLLMService } from './UnifiedLLMService';
 import { QualityMetricsService } from './QualityMetricsService';
 import { ExperimentModelService } from '../Experiment.model';
+import { config } from '../../config';
 
 export class ExperimentService {
-    private llmService: LLMService;
+    private llmService: UnifiedLLMService;
     private qualityService: QualityMetricsService;
     private experimentModel: ExperimentModelService;
 
     constructor() {
-        this.llmService = new LLMService();
+        // Use the configured provider from environment
+        const provider = config.DEFAULT_LLM_PROVIDER as 'openai' | 'gemini';
+        this.llmService = new UnifiedLLMService(provider);
         this.qualityService = new QualityMetricsService();
         this.experimentModel = new ExperimentModelService();
     }
@@ -26,11 +29,9 @@ export class ExperimentService {
             this.validateConfig(config);
 
             // Generate responses
-            console.log(`Starting experiment ${experimentId} with ${config.parameters.length} parameter sets`);
             const responses = await this.llmService.generateExperimentResponses(config);
 
             // Calculate quality metrics for each response
-            console.log(`Calculating quality metrics for ${responses.length} responses`);
             const metrics: QualityMetrics[] = responses.map(response => {
                 const metric = QualityMetricsService.calculateMetrics(response);
                 return {
@@ -52,7 +53,6 @@ export class ExperimentService {
             // Save to database
             await this.experimentModel.saveExperiment(experiment);
 
-            console.log(`Experiment ${experimentId} completed successfully`);
             return experiment;
 
         } catch (error) {
@@ -238,7 +238,7 @@ export class ExperimentService {
 
         // Validate each parameter set
         config.parameters.forEach((params, index) => {
-            const validation = LLMService.validateParameters(params);
+            const validation = UnifiedLLMService.validateParameters(params);
             if (!validation.valid) {
                 throw new Error(`Invalid parameters at index ${index}: ${validation.errors.join(', ')}`);
             }

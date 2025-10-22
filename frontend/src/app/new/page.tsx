@@ -98,10 +98,18 @@ export default function NewExperiment() {
                                 onChange={(e) => setFormData(prev => ({ ...prev, model: e.target.value }))}
                                 className="input-field"
                             >
-                                <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                                <option value="gpt-3.5-turbo-16k">GPT-3.5 Turbo 16K</option>
-                                <option value="gpt-4">GPT-4</option>
-                                <option value="gpt-4-turbo-preview">GPT-4 Turbo Preview</option>
+                                <optgroup label="OpenAI Models (mapped to Gemini)">
+                                    <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                                    <option value="gpt-3.5-turbo-16k">GPT-3.5 Turbo 16K</option>
+                                    <option value="gpt-4">GPT-4</option>
+                                    <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                                </optgroup>
+                                <optgroup label="Gemini Models">
+                                    <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+                                    <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+                                    <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+                                    <option value="gemini-2.0-flash-lite">Gemini 2.0 Flash Lite</option>
+                                </optgroup>
                             </select>
                         </div>
 
