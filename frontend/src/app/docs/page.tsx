@@ -18,16 +18,62 @@ export default function Documentation() {
                         <div className="space-y-4 text-gray-700">
                             <p>
                                 The LLM Parameter Lab is designed to help you understand how different parameters
-                                affect Large Language Model responses. Follow these steps to get started:
+                                affect Large Language Model responses using Gemini models. Follow these steps to get started:
                             </p>
                             <ol className="list-decimal list-inside space-y-2 ml-4">
                                 <li>Navigate to the "New Experiment" page</li>
                                 <li>Enter your prompt in the text area</li>
-                                <li>Select your preferred LLM model</li>
+                                <li>Select your preferred model (OpenAI names are automatically mapped to Gemini)</li>
                                 <li>Configure parameter sets with different values</li>
                                 <li>Set the number of iterations per parameter set</li>
                                 <li>Click "Run Experiment" to start the analysis</li>
                             </ol>
+                            <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg mt-4">
+                                <p className="text-sm text-blue-800">
+                                    <strong>Note:</strong> You can use familiar OpenAI model names (gpt-3.5-turbo, gpt-4, etc.)
+                                    and they will be automatically mapped to their Gemini equivalents for processing.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Model Mapping */}
+                    <div className="card">
+                        <h2 className="text-xl font-semibold text-gray-900 mb-4">Model Mapping</h2>
+                        <div className="space-y-4 text-gray-700">
+                            <p>
+                                Our system automatically maps OpenAI model names to their Gemini equivalents,
+                                allowing you to use familiar model names while leveraging Gemini's capabilities:
+                            </p>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="bg-gray-50 p-4 rounded-lg">
+                                    <h3 className="font-semibold text-gray-800 mb-2">OpenAI Models → Gemini</h3>
+                                    <ul className="text-sm text-gray-700 space-y-1">
+                                        <li><code>gpt-3.5-turbo</code> → <code>gemini-2.0-flash</code></li>
+                                        <li><code>gpt-3.5-turbo-16k</code> → <code>gemini-2.0-flash</code></li>
+                                        <li><code>gpt-4</code> → <code>gemini-2.0-flash</code></li>
+                                        <li><code>gpt-4-turbo</code> → <code>gemini-2.0-flash</code></li>
+                                    </ul>
+                                </div>
+
+                                <div className="bg-gray-50 p-4 rounded-lg">
+                                    <h3 className="font-semibold text-gray-800 mb-2">Direct Gemini Models</h3>
+                                    <ul className="text-sm text-gray-700 space-y-1">
+                                        <li><code>gemini-2.0-flash</code> - Fast, versatile model</li>
+                                        <li><code>gemini-2.5-pro</code> - Advanced reasoning</li>
+                                        <li><code>gemini-2.5-flash</code> - Balanced performance</li>
+                                        <li><code>gemini-2.0-flash-lite</code> - Lightweight option</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div className="bg-green-50 border border-green-200 p-4 rounded-lg">
+                                <p className="text-sm text-green-800">
+                                    <strong>Benefits:</strong> Use familiar OpenAI model names while getting Gemini's
+                                    advanced capabilities, cost-effectiveness, and reliability.
+                                </p>
+                            </div>
                         </div>
                     </div>
 
@@ -171,6 +217,7 @@ export default function Documentation() {
                                 <h3 className="font-semibold text-gray-800 mb-2">Common Issues</h3>
                                 <ul className="list-disc list-inside space-y-1 ml-4">
                                     <li><strong>Experiment fails:</strong> Check your prompt length and parameter values</li>
+                                    <li><strong>Model overloaded:</strong> Try using gemini-2.0-flash instead of gemini-2.5-pro</li>
                                     <li><strong>Low scores:</strong> Try adjusting temperature and top_p values</li>
                                     <li><strong>Inconsistent results:</strong> Increase iterations for more reliable averages</li>
                                     <li><strong>Export issues:</strong> Ensure you have permission to download files</li>

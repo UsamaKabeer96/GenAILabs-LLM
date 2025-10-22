@@ -10,35 +10,35 @@ export default function Home() {
                     </h1>
 
                     <p className="text-xl text-gray-600 mb-12 max-w-3xl mx-auto">
-                        Experiment with different LLM parameters to understand how they affect response quality.
-                        Analyze temperature, top_p, and other settings to optimize your AI interactions.
+                        Experiment with different LLM parameters using Gemini models to understand how they affect response quality.
+                        Analyze temperature, top_p, and other settings to optimize your AI interactions with automatic model mapping.
                     </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
                         <div className="card text-center">
                             <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                                Create Experiments
+                                Gemini-Powered Experiments
                             </h3>
                             <p className="text-gray-600">
-                                Set up experiments with different parameter combinations to test LLM responses.
+                                Create experiments using Gemini models with automatic OpenAI model name mapping for familiar interface.
                             </p>
                         </div>
 
                         <div className="card text-center">
                             <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                                Analyze Results
+                                Smart Analysis
                             </h3>
                             <p className="text-gray-600">
-                                View detailed metrics and compare response quality across different parameter sets.
+                                Get comprehensive quality metrics and compare responses across different parameter combinations.
                             </p>
                         </div>
 
                         <div className="card text-center">
                             <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                                Export Data
+                                Flexible Export
                             </h3>
                             <p className="text-gray-600">
-                                Export your experiment results for further analysis and documentation.
+                                Export results in JSON or CSV format for detailed analysis and integration with other tools.
                             </p>
                         </div>
                     </div>

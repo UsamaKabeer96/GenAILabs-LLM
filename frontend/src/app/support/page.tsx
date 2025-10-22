@@ -45,9 +45,19 @@ export default function Support() {
                             <div>
                                 <h3 className="font-semibold text-gray-800 mb-2">How do I create my first experiment?</h3>
                                 <p className="text-sm">
-                                    Navigate to the "New Experiment" page, enter your prompt, select a model,
-                                    configure your parameter sets, and click "Run Experiment". The system will
-                                    generate responses and calculate quality metrics automatically.
+                                    Navigate to the "New Experiment" page, enter your prompt, select a model
+                                    (OpenAI names are automatically mapped to Gemini), configure your parameter sets,
+                                    and click "Run Experiment". The system will generate responses using Gemini models
+                                    and calculate quality metrics automatically.
+                                </p>
+                            </div>
+
+                            <div>
+                                <h3 className="font-semibold text-gray-800 mb-2">Why do I see OpenAI model names but get Gemini responses?</h3>
+                                <p className="text-sm">
+                                    Our system automatically maps OpenAI model names to their Gemini equivalents for
+                                    familiar interface while leveraging Gemini's capabilities. You can also use
+                                    direct Gemini model names if you prefer.
                                 </p>
                             </div>
 
@@ -110,6 +120,7 @@ export default function Support() {
                                             <li>Check that your prompt is not empty</li>
                                             <li>Ensure parameter values are within valid ranges</li>
                                             <li>Verify your internet connection</li>
+                                            <li>Try using gemini-2.0-flash if gemini-2.5-pro is overloaded</li>
                                         </ul>
                                     </div>
 
