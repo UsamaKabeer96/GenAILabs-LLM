@@ -178,15 +178,15 @@ export class ExperimentController {
         return {
             parameter_combinations: parameterCombinations,
             average_scores: averageScores,
-            best_response: bestResponse || { 
-                parameters: { temperature: 0, top_p: 0, max_tokens: 0 }, 
-                score: 0, 
-                response_id: '' 
+            best_response: bestResponse || {
+                parameters: { temperature: 0, top_p: 0, max_tokens: 0 },
+                score: 0,
+                response_id: ''
             },
-            worst_response: worstResponse || { 
-                parameters: { temperature: 0, top_p: 0, max_tokens: 0 }, 
-                score: 0, 
-                response_id: '' 
+            worst_response: worstResponse || {
+                parameters: { temperature: 0, top_p: 0, max_tokens: 0 },
+                score: 0,
+                response_id: ''
             },
         };
     }
