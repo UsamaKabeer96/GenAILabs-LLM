@@ -16,6 +16,14 @@ dotenv.config();
 
 const app = express();
 
+// Trust proxy for Vercel (fixes rate limiting issue)
+if (process.env.VERCEL === "1") {
+    app.set("trust proxy", 1);
+}
+
+// Connect to MongoDB
+mongoDB();
+
 // Security middleware
 app.use(helmet());
 app.use(cors({
