@@ -15,12 +15,6 @@ export const mongoDB = async () => {
       return;
     }
 
-    console.log("🔄 Connecting to MongoDB...");
-    console.log("🌍 Environment:", process.env.NODE_ENV);
-    console.log("☁️ Vercel:", process.env.VERCEL);
-    console.log("🔗 URI exists:", !!uri);
-    console.log("🔗 URI starts with:", uri?.substring(0, 20) + "...");
-
     await mongoose.connect(uri, {
       dbName: "llm-parameter-lab",
       ...(process.env.VERCEL === "1"
@@ -37,11 +31,11 @@ export const mongoDB = async () => {
         }),
     });
 
-    console.log("✅ Connected to MongoDB successfully!");
-    console.log("📊 Database: llm-parameter-lab");
-    console.log(`🏠 Host: ${mongoose.connection.host}`);
-    console.log(`🔌 Ready State: ${mongoose.connection.readyState}`);
-    console.log(`🔗 Connection ID: ${mongoose.connection.id}`);
+    console.log("Connected to MongoDB successfully!");
+    console.log("Database: llm-parameter-lab");
+    console.log(`Host: ${mongoose.connection.host}`);
+    console.log(`Ready State: ${mongoose.connection.readyState}`);
+    console.log(`Connection ID: ${mongoose.connection.id}`);
 
     // Handle connection events
     mongoose.connection.on("error", (err) => {

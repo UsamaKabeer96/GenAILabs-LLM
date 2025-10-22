@@ -121,9 +121,9 @@ if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
     // Connect to MongoDB before starting server
     mongoDB().then(() => {
         app.listen(PORT, () => {
-            console.log(`🚀 Server running on port ${PORT}`);
-            console.log(`📊 LLM Parameter Lab API ready`);
-            console.log(`🔗 Health check: http://localhost:${PORT}/`);
+            console.log(`Server running on port ${PORT}`);
+            console.log(`LLM Parameter Lab API ready`);
+            console.log(`Health check: http://localhost:${PORT}/`);
         });
     }).catch((error) => {
         console.error('Failed to start server:', error);
