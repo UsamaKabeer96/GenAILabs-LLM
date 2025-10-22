@@ -1,10 +1,10 @@
-import { ExperimentResult, ExperimentConfig, LLMResponse, QualityMetrics } from '../types';
+import { ExperimentResult } from '../types';
+import { DatabaseConnection } from '../config/database';
 
 export class ExperimentModel {
     private db: any;
 
     constructor() {
-        const { DatabaseConnection } = require('../config/database');
         this.db = DatabaseConnection.getInstance().getDatabase();
     }
 

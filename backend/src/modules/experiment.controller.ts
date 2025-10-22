@@ -1,4 +1,4 @@
-import { ExperimentConfig, ExperimentResult, LLMResponse, QualityMetrics, ComparisonData } from '../types';
+import { ExperimentConfig, ExperimentResult, QualityMetrics, ComparisonData } from '../types';
 import { ExperimentModel } from './Experiment.model';
 import { LLMService } from './services/LLMService';
 import { QualityMetricsService } from './services/QualityMetricsService';
@@ -178,8 +178,16 @@ export class ExperimentController {
         return {
             parameter_combinations: parameterCombinations,
             average_scores: averageScores,
-            best_response: bestResponse!,
-            worst_response: worstResponse!,
+            best_response: bestResponse || { 
+                parameters: { temperature: 0, top_p: 0, max_tokens: 0 }, 
+                score: 0, 
+                response_id: '' 
+            },
+            worst_response: worstResponse || { 
+                parameters: { temperature: 0, top_p: 0, max_tokens: 0 }, 
+                score: 0, 
+                response_id: '' 
+            },
         };
     }
 
@@ -191,8 +199,20 @@ export class ExperimentController {
         topPRange: [number, number] = [0.1, 1.0],
         maxTokens: number = 500,
         steps: number = 3
-    ): any[] {
-        const combinations: any[] = [];
+    ): Array<{
+        temperature: number;
+        top_p: number;
+        max_tokens: number;
+        frequency_penalty: number;
+        presence_penalty: number;
+    }> {
+        const combinations: Array<{
+            temperature: number;
+            top_p: number;
+            max_tokens: number;
+            frequency_penalty: number;
+            presence_penalty: number;
+        }> = [];
         const tempStep = (temperatureRange[1] - temperatureRange[0]) / (steps - 1);
         const topPStep = (topPRange[1] - topPRange[0]) / (steps - 1);
 
