@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Layout } from '@/components/Layout'
+import { MarkdownRenderer } from '@/components/MarkdownRenderer'
 import { ExperimentResult } from '@/types'
 import { api } from '@/lib/api'
 
@@ -218,8 +219,8 @@ export default function Results() {
 
                                 <div className="mb-4">
                                     <h4 className="text-sm font-medium text-gray-700 mb-2">Response Text:</h4>
-                                    <div className="bg-gray-50 p-4 rounded-lg text-sm text-gray-800">
-                                        {response.text}
+                                    <div className="bg-gray-50 p-4 rounded-lg">
+                                        <MarkdownRenderer content={response.text} />
                                     </div>
                                 </div>
 
