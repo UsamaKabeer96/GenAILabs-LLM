@@ -5,8 +5,7 @@
       "src": "backend/src/index.ts",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["backend/src/**", "backend/dist/**"],
-        "maxDuration": 30
+        "includeFiles": ["backend/**"]
       }
     }
   ],
@@ -16,15 +15,16 @@
       "dest": "backend/src/index.ts"
     },
     {
-      "src": "/health",
-      "dest": "backend/src/index.ts"
-    },
-    {
       "src": "/(.*)",
       "dest": "backend/src/index.ts"
     }
   ],
   "env": {
     "NODE_ENV": "production"
+  },
+  "functions": {
+    "backend/src/index.ts": {
+      "maxDuration": 30
+    }
   }
 }
