@@ -22,9 +22,9 @@ export class LLMService {
         const startTime = Date.now();
 
         try {
-            // For development/testing without API key
-            if (!config.openai.apiKey || config.openai.apiKey === 'mock-key-for-development') {
-                return this.generateMockResponse(prompt, parameters);
+            // Validate API key is present
+            if (!config.openai.apiKey) {
+                throw new Error('OpenAI API key is required but not provided');
             }
 
             const completion = await this.openai.chat.completions.create({
@@ -84,36 +84,6 @@ export class LLMService {
         return responses;
     }
 
-    /**
-     * Generate mock responses for development/testing
-     */
-    private generateMockResponse(prompt: string, parameters: LLMParameters): LLMResponse {
-        const responses = [
-            `This is a comprehensive response to your prompt: "${prompt}". I'll analyze this topic from multiple perspectives. First, let me provide an overview of the key concepts involved. The temperature setting of ${parameters.temperature} affects creativity, while top_p of ${parameters.top_p} controls diversity.`,
-
-            `Here's my detailed analysis of "${prompt}". The parameters you've chosen (temperature: ${parameters.temperature}, top_p: ${parameters.top_p}) will influence the response characteristics. Let me break this down systematically.`,
-
-            `I'll address your question about "${prompt}" with the following considerations. The current parameter configuration shows temperature at ${parameters.temperature} and top_p at ${parameters.top_p}. This creates a specific response pattern that balances creativity and coherence.`,
-
-            `Your prompt "${prompt}" requires careful analysis. Given the parameters (temperature: ${parameters.temperature}, top_p: ${parameters.top_p}), I'll provide a structured response that demonstrates how these settings affect the output quality and style.`,
-
-            `Let me provide a thorough response to "${prompt}". The parameter settings you've chosen (temperature: ${parameters.temperature}, top_p: ${parameters.top_p}) will shape how I approach this topic. I'll ensure the response is both informative and well-structured.`
-        ];
-
-        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-        const responseTime = Math.random() * 2000 + 500; // 500-2500ms
-
-        return {
-            id: `mock_resp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-            text: randomResponse,
-            parameters,
-            metadata: {
-                tokens_used: Math.floor(Math.random() * 200) + 50,
-                finish_reason: 'stop',
-                response_time: Math.floor(responseTime),
-            },
-        };
-    }
 
     /**
      * Validate parameters before making API calls
